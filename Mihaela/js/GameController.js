@@ -367,8 +367,7 @@ function renderWorld() {
         elevators.push(b6);
         elevators.push(b7);
 
-        addEnemies();
-		
+
 
         for (var i = 0; i < 3; i++) {
             var c1 = dropGroundUnit(ground_bricks[7], GRAPHICS.coin, i * 32, -10);
@@ -492,11 +491,6 @@ function debugUpdate() {
     fpsCount = 0;
 }
 
-
-
-
-
-
 $(document).ready(function() {
 
     debug = document.getElementById('debug');
@@ -525,41 +519,4 @@ $(document).ready(function() {
     }, 500);
 });
 
-
-function addEnemies(){
-var enemi = new Image();
-coinImage.src = GRAPHICS.enemies;
-
-var canvas = document.createElement("canvas");
-
-
-
-
-function spriteEnemies (options) {
-				
-    that.render = function () {
-
-        // Draw the animation
-        that.context.drawImage(
-           that.image,
-           0,
-           0,
-           that.width,
-           that.height,
-           0,
-           0,
-           that.width,
-           that.height);
-    };
-	
-	var em = spriteEnemies({
-    context: canvas.getContext("2d"),
-    width: 100,
-    height: 100,
-    image: coinImage
-});
-em.context.drawImage(GRAPHICS.enemies, 1, 0, 10, 10, 0, 0, 10,10);
-em.render();
-
-}
 
