@@ -115,8 +115,15 @@ function update() {
         elevators[e].style.top = 175 + 45 * Math.sin(theta / 80) + "px";
     }
    
-       for(var i=0;i<1;i++){
-	   var enemiLeftPos=parseInt( enemies[0].style.left)
+      
+     
+	
+    //correct character position if hes colliding with objects
+    collisionAdjust();
+
+	
+	 for(var i=0;i<1;i++){
+	   var enemiLeftPos=parseInt( enemies[0].style.left);
 	   var leftPosHolder=enemiLeftPos;
 	  	  
       if(leftPosHolder<1190 && !goLeft){
@@ -134,13 +141,9 @@ function update() {
 	  	   goLeft=false;
 	      }
 	   }
-	    
 	  }
-     
 	
-    //correct character position if hes colliding with objects
-    collisionAdjust();
-
+	
     //render results
     render();
 }
