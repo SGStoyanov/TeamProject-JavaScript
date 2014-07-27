@@ -36,12 +36,16 @@ GRAPHICS.moving_block = "images/moving_block.png";
 GRAPHICS.mushroom_head = "images/mushroom_head.gif";
 GRAPHICS.coin = "images/coin.gif";
 GRAPHICS.small_brick = "images/small_brick.png";
-GRAPHICS.enemiis="images/enemies.png"
+GRAPHICS.enemiis="images/enemies.png";
+GRAPHICS.koopa_troopa_right="images/enemies/frame7.png";
+GRAPHICS.koopa_troopa_left="images/enemies/frame6.png";
 var bOnSurface = false;
 var bCanJump = true;
+var goLeft=false;
 var GROUNDED_TIMER = 500;
 var BOUNCE_FACTOR = 2;
 var elevators = [];
+var enemies=[];
 var coins = [];
 var hitables = [];
 var coinboxes = [];
@@ -110,7 +114,29 @@ function update() {
     for (e in elevators) {
         elevators[e].style.top = 175 + 45 * Math.sin(theta / 80) + "px";
     }
-
+   
+  
+	   var enemiLeftPos=parseInt( enemies[0].style.left)
+	   var leftPosHolder=enemiLeftPos;
+	  	  
+      if(leftPosHolder<1190 && !goLeft){
+      leftPosHolder++;	 
+      enemies[0].style.left= leftPosHolder +"px";
+	  enemies[0].src=GRAPHICS.koopa_troopa_right;
+	   }
+	   else {
+	   goLeft=true;
+	   leftPosHolder--;
+	   enemies[0].style.left= leftPosHolder +"px";
+	   enemies[0].src=GRAPHICS.koopa_troopa_left;
+	   if(leftPosHolder<955)
+	      {
+	  	   goLeft=false;
+	      }
+	   }
+	  
+     
+	
     //correct character position if hes colliding with objects
     collisionAdjust();
 
@@ -343,6 +369,8 @@ function renderWorld() {
         collidables.push(ground_bricks[i]);
     }
 
+	
+	
     setTimeout(function() {
         var b4 = dropGroundUnit(ground_bricks[9], GRAPHICS.ground_pipe);
         var b5 = dropGroundUnit(ground_bricks[8], GRAPHICS.question_block, -15, -140);
@@ -409,11 +437,21 @@ function renderWorld() {
                 collidables.push(c1);
             }
         }
-
+		
         var b8 = dropGroundUnit(ground_bricks[12], GRAPHICS.ground_pipe);
         collidables.push(b8);
+       
 
         var b9 = dropGroundUnit(ground_bricks[23], GRAPHICS.ground_pipe);
+		
+	
+	  
+       var koopa= dropGroundUnit(ground_bricks[10],GRAPHICS.koopa_troopa_right,i*30,0);
+	   enemies[0]=koopa;
+		
+
+	
+		
         warppipes.push(b9);
         collidables.push(b9);
 
