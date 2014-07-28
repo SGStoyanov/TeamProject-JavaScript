@@ -22,10 +22,6 @@ var OBJ_BELOW = 2;
 var OBJ_LEFT = 3;
 var OBJ_RIGHT = 4;
 var GRAPHICS = {};
-var enemies = [];
-GRAPHICS.enemiis = "images/enemies.png";
-GRAPHICS.koopa_troopa_right = "images/enemies/frame7.png";
-GRAPHICS.koopa_troopa_left = "images/enemies/frame6.png";
 GRAPHICS.running_left = "images/running_left.gif";
 GRAPHICS.running_right = "images/running_right.gif";
 GRAPHICS.jumping_left = "images/jumping_left.gif";
@@ -71,7 +67,6 @@ function update() {
         bAttemptingToWarp = false;
 
     //move character based on what keys are pressed
-    //console.log(keysDown);
     for (key in keysDown) {
         switch (keysDown[key]) {
             case RIGHT:
@@ -119,27 +114,6 @@ function update() {
 
     //correct character position if hes colliding with objects
     collisionAdjust();
-
-    for (var i = 0; i < 1; i++) {
-        var enemiLeftPos = parseInt(enemies[0].style.left);
-        var leftPosHolder = enemiLeftPos;
-
-        if (leftPosHolder < 1190 && !goLeft) {
-            leftPosHolder++;
-            enemies[0].style.left = leftPosHolder + "px";
-            enemies[0].src = GRAPHICS.koopa_troopa_right;
-        }
-        else {
-            goLeft = true;
-            leftPosHolder--;
-            enemies[0].style.left = leftPosHolder + "px";
-            enemies[0].src = GRAPHICS.koopa_troopa_left;
-            if (leftPosHolder < 955)
-            {
-                goLeft = false;
-            }
-        }
-    }
 
     //render results
     render();
@@ -369,17 +343,12 @@ function renderWorld() {
     //setting the ground bricks of the level
     for (var i = 0; i < 78; i++) {
         var hole_offset = 0;
-        var width = 45;
         if (i === 24) {
             hole_offset = 35;
-        }
-        else if (i = 51) {
-            width = 50;
-        }
-        else if (i === 30 || i === 53) {
+        }else if (i === 30 || i === 53) {
             hole_offset = 45;
         }
-        ground_bricks.push(dropGroundUnit(null, GRAPHICS.ground_brick, (i * 45) + hole_offset, stage.offsetHeight - 45, width, 48, 0, 0, "repeat"));
+        ground_bricks.push(dropGroundUnit(null, GRAPHICS.ground_brick, (i * 45) + hole_offset, stage.offsetHeight - 45, 45, 48, 0, 0, "repeat"));
         collidables.push(ground_bricks[i]);
     }
 
@@ -393,7 +362,7 @@ function renderWorld() {
         collidables.push(pipe3);
         var pipe4 = dropGroundUnit(ground_bricks[20], GRAPHICS.ground_pipe_small, null, null, 33, 63, -230, -385, "no-repeat");
         collidables.push(pipe4);
-        var pipe5 = dropGroundUnit(ground_bricks[60], GRAPHICS.ground_pipe_small, null, null, 33, 31, -308, -490, "no-repeat");
+        var pipe5 = dropGroundUnit(ground_bricks[60], GRAPHICS.ground_pipe_small,null, null, 33, 31, -308, -490,  "no-repeat");
         collidables.push(pipe5);
         var pipe6 = dropGroundUnit(ground_bricks[62], GRAPHICS.ground_pipe_small, null, null, 33, 31, -308, -490, "no-repeat");
         collidables.push(pipe6);
@@ -407,12 +376,12 @@ function renderWorld() {
                 collidables.push(stone);
             }
         }
-
+        
         for (var j = 0; j < 4; j++) {
             for (var i = 0; i < 6; i++) {
                 if (i <= j)
                     continue;
-                var stone = dropGroundUnit(ground_bricks[51], GRAPHICS.small_brick, i * 20, -j * 20, 20, 20, 0, 0, "no-repeat");
+                var stone = dropGroundUnit(ground_bricks[50], GRAPHICS.small_brick, i * 20, -j * 20, 20, 20, 0, 0, "no-repeat");
                 collidables.push(stone);
             }
         }
@@ -473,8 +442,7 @@ function renderWorld() {
             coins.push(c1);
         }
 
-        var koopa = dropGroundUnit(ground_bricks[10], GRAPHICS.koopa_troopa_right, i * 30, 0);
-        enemies[0] = koopa;
+        
 
         //Pipe allowing to get to lowest part of level
         var b9 = dropGroundUnit(ground_bricks[23], GRAPHICS.ground_pipe);
@@ -506,10 +474,7 @@ function dropGroundUnit(onGroundUnit, graphic_src, left, bottom, width, height, 
     ground_unit.style.zIndex = 2;
     return ground_unit;
 }
-
-
 function gravity() {
-    //console.log("bOnSurface"+bOnSurface,"gravity_const:"+gravity_const, " GRAVITY_CAP: "+ GRAVITY_CAP) ;
     if (!bOnSurface)
         posY += gravity_const;
     gravity_const++;
