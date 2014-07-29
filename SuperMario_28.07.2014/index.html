@@ -12,8 +12,13 @@
         <script type="text/javascript" src="js/GameController.js"></script>
     </head>
     <body>
+        <div id="mario_game_image"><img onclick="changeVisibility()" src="SuperMario - start screen.png" ></div>
+        <div id="mario_game_image_second"><img onclick="changeVisibility()" src="SuperMario - start screen 2.png" ></div>
         <div id="stage">
-            <div id="stats_pane"><img src="images/coin.gif" />x<span id="coin_counter">0</span></div>
+            <div id="mario_points">MARIO<div id="points">0</div></div>
+            <div id="coins-count"><img src="images/coin.gif" alt="COINS" />X<div id="coin_counter">0</div></div>
+            <div id="world_counter">WORLD 1-1</div>
+            <div id="timer">TIME<div id="timer_seconds">400</div></div>
             <img id="sprite" class="mario_small" src="images/running_right.gif" />
         </div>
         <textarea id="debug" rows="3" cols="50"></textarea>

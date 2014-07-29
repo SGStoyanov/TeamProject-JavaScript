@@ -39,9 +39,11 @@ GRAPHICS.small_brick = "images/small_brick.png";
 GRAPHICS.enemiis="images/enemies.png";
 GRAPHICS.koopa_troopa_right="images/enemies/frame7.png";
 GRAPHICS.koopa_troopa_left="images/enemies/frame6.png";
+GRAPHICS.mushroom_enemy="images/enemies/frame0.png";
 var bOnSurface = false;
 var bCanJump = true;
 var goLeft=false;
+var mushGoLeft = false;
 var GROUNDED_TIMER = 500;
 var BOUNCE_FACTOR = 2;
 var elevators = [];
@@ -122,7 +124,7 @@ function update() {
     collisionAdjust();
 
 	
-	 for(var i=0;i<1;i++){
+	for(var i=0;i<1;i++){
 	   var enemiLeftPos=parseInt( enemies[0].style.left);
 	   var leftPosHolder=enemiLeftPos;
 	  	  
@@ -142,10 +144,29 @@ function update() {
 	      }
 	   }
 	  }
-	
-	
+      for(var i=0;i<1;i++){
+       var mushroomLeftPos=parseInt( enemies[1].style.left);
+       var PosHolder=mushroomLeftPos;
+          
+      if(PosHolder<1600 && !mushGoLeft){
+      PosHolder++;   
+      enemies[1].style.left= PosHolder +"px";
+      enemies[1].src=GRAPHICS.mushroom_enemy;
+       }
+       else {
+       mushGoLeft=true;
+       PosHolder--;
+       enemies[1].style.left= PosHolder +"px";
+       enemies[1].src=GRAPHICS.mushroom_enemy;
+       if(leftPosHolder<1050)
+          {
+           mushGoLeft=false;
+          }
+       }
+      }
     //render results
     render();
+    
 }
 
 function isObtainable(obj) {
@@ -451,7 +472,9 @@ function renderWorld() {
 	
 	  
        var koopa= dropGroundUnit(ground_bricks[10],GRAPHICS.koopa_troopa_right,i*30,0);
+       var mushroom = dropGroundUnit(ground_bricks[10],GRAPHICS.mushroom_enemy,i*35,0)
 	   enemies[0]=koopa;
+       enemies[1]=mushroom;
 		
 
 	
