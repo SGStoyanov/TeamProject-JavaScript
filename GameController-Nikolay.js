@@ -7,7 +7,7 @@ var current_speed = 3;
 var jump_height = 12;
 var gravity_const = 1;
 var GRAVITY_CAP = 8;
-var WORLD_SIZE = 2900;
+var WORLD_SIZE = 3500;
 var JUMP = 38;
 var LEFT = 37;
 var RIGHT = 39;
@@ -28,17 +28,22 @@ GRAPHICS.jumping_left = "images/jumping_left.gif";
 GRAPHICS.jumping_right = "images/jumping_right.gif";
 GRAPHICS.standing_left = "images/standing_left.gif";
 GRAPHICS.standing_right = "images/standing_right.gif";
-GRAPHICS.ground_brick = "images/ground_brick.png";
-GRAPHICS.ground_pipe_middle = "images/SuperMarioBackgroundSprite.gif";
-GRAPHICS.ground_pipe_small = "images/SuperMarioBackgroundSprite.gif";
-GRAPHICS.ground_pipe_big = "images/SuperMarioBackgroundSprite.gif";
-GRAPHICS.flag = "images/SuperMarioBackgroundSprite.gif"
-GRAPHICS.question_block = "images/question_block.gif";
-GRAPHICS.block_brick = "images/block_brick.gif";
+
+
 GRAPHICS.moving_block = "images/moving_block.png";
-GRAPHICS.mushroom_head = "images/mushroom_head.gif";
+
 GRAPHICS.coin = "images/coin.gif";
+
 GRAPHICS.small_brick = "images/small_brick.png";
+GRAPHICS.ground_brick = "images/ground_brick.png";
+GRAPHICS.ground_pipe = "images/SuperMarioBackgroundSprite.gif";
+GRAPHICS.ground_castle = "images/SuperMarioBackgroundSprite.gif";
+GRAPHICS.ground_flag = "images/SuperMarioBackgroundSprite.gif";
+GRAPHICS.question_block = "images/BrickElementsSprite.png";
+GRAPHICS.block_brick = "images/BrickElementsSprite.png";
+GRAPHICS.mushroom_big = "images/BrickElementsSprite.png";
+GRAPHICS.take_coin = "images/BrickElementsSprite.png";
+
 var bOnSurface = false;
 var bCanJump = true;
 var GROUNDED_TIMER = 500;
@@ -50,7 +55,6 @@ var coinboxes = [];
 var mushroomboxes = [];
 var warppipes = [];
 var mushrooms = [];
-var goLeft=false;
 var bAttemptingToWarp = false;
 var theta = 0;
 var MOTION_LEFT = 0;
@@ -59,8 +63,35 @@ var hoizontal_motion_direction = MOTION_RIGHT;
 var debug;
 var collideCount;
 var fpsCount;
+var isGameOver = false;
+var marioLives = 3;
+
+function AddMarioLivesUI(value) {
+    live_counter.innerHTML = parseInt(live_counter.innerHTML) + value;    
+}
+
+function IsMarioAtHole() {
+    var ret = false;
+
+    if ((sprite.offsetTop + sprite.width) >= stage.offsetHeight) {
+        ret = true;
+    }
+    
+    return ret;
+}
+function ResetMarioPosition() {
+    sprite.offsetTop = 200;
+    sprite.offsetLeft = 200;
+    sprite.style.left = "200px";
+    sprite.style.top = "200px";
+    stage.scrollLeft = 0;
+    posX = 200;
+    posY = 200;
+}
 
 function update() {
+if (isGameOver)
+        return;
     fpsCount++;
     //update chacter motion appearance, running, jumping, standing..
     if (bOnSurface)
@@ -73,6 +104,7 @@ function update() {
         switch (keysDown[key]) {
             case RIGHT:
                 posX += current_speed;
+                console.log(stage.scrollLeft, sprite.offsetLeft, stage.offsetWidth);
                 if (stage.scrollLeft < WORLD_SIZE)
                     stage.scrollLeft = sprite.offsetLeft - (stage.offsetWidth / 2) + (sprite.offsetWidth / 2);
                 if (bOnSurface)
@@ -116,8 +148,8 @@ function update() {
 	
 	//task 4 Nikolay
 	for (i in mushrooms) {
-        mushrooms[i].style.left = 835 + (-30) * Math.sin(theta / 80) + "px";
-        mushrooms[i].style.top = 235 + "px";
+        mushrooms[i].style.left = 300 + (10) * Math.sin(theta / 80) + "px";
+        mushrooms[i].style.top = 250 + "px";
     }
 
     //correct character position if hes colliding with objects
@@ -125,6 +157,22 @@ function update() {
 
     //render results
     render();
+    
+    //checking if Mario has fallen
+    if (IsMarioAtHole()) {
+        marioLives--;
+        AddMarioLivesUI(-1);
+        if (marioLives <= 0) {
+
+            var game_over_text = document.getElementById("game_over_text");
+            game_over_text.style.visibility = "visible";
+            isGameOver = true;
+        }
+        else {
+            ResetMarioPosition();        
+        }
+
+    }
 }
 
 function isObtainable(obj) {
@@ -155,13 +203,25 @@ function playHitAnimation(obj) {
         }, 200);
     }
     if (coinboxes.indexOf(obj) > -1) {
-        var c = document.createElement("img");
+        removeFromCollection(coinboxes, obj);
+        removeFromCollection(hitables, obj);
+
+
+
+        var c = document.createElement("div");
         stage.appendChild(c);
-        c.src = GRAPHICS.coin;
+        var top_str = obj.style.top;
+        var top = parseInt(top_str);
         c.style.position = "absolute";
-        c.style.top = obj.offsetTop + "px";
-        c.style.left = (obj.offsetLeft + (obj.offsetWidth / 2)) - (c.offsetWidth / 2) + "px";
+        c.style.top = top + "px";
+        c.style.left = (obj.offsetLeft + (obj.offsetWidth / 2)) - (c.offsetWidth / 2) - 7 + "px";
+        c.style.width = "15px";
+        c.style.height = "15px";
+        c.style.backgroundImage = "url(" + GRAPHICS.take_coin + ")";
+        c.style.backgroundPosition = "-88px 0px";
+        c.style.backgroundRepeat = 'no-repeat';
         obj.style.zIndex = 1000;
+        obj.style.backgroundPosition = "-54px 0px";
 
         animatePoints(c, 200);
         takeCoin();
@@ -172,19 +232,27 @@ function playHitAnimation(obj) {
     }
     if (mushroomboxes.indexOf(obj) > -1) {
         removeFromCollection(mushroomboxes, obj);
-        var c = document.createElement("img");
+        removeFromCollection(hitables, obj);
+        var c = document.createElement("div");
         stage.appendChild(c);
-        c.src = GRAPHICS.mushroom_head;
+        var top_str = obj.style.top;
+        var top = parseInt(top_str);
         c.style.position = "absolute";
-        c.style.top = obj.offsetTop + "px";
-        c.style.left = (obj.offsetLeft + (obj.offsetWidth / 2)) - (c.offsetWidth / 2) + "px";
+        c.style.top = top + "px";
+        c.style.left = (obj.offsetLeft + (obj.offsetWidth / 2)) - (c.offsetWidth / 2) - 8 + "px";
+        c.style.width = "16px";
+        c.style.height = "16px";
+        c.style.backgroundImage = "url(" + GRAPHICS.mushroom_big + ")";
+        c.style.backgroundPosition = "-104px 0px";
+        c.style.backgroundRepeat = 'no-repeat';
         obj.style.zIndex = 1000;
+        obj.style.backgroundPosition = "-54px 0px";
         mushrooms.push(c);
 
         collidables.push(c);
         coins.push(c); //fix later
 
-        animateUp(c, 8, 1, function() {
+        animateUp(c, 5, 1, function() {
             //make moable back and forth
             //animateHorizontal(c,2);
         });
@@ -197,6 +265,7 @@ function animatePoints(obj, pointsValue) {
     stage.appendChild(p);
     p.innerHTML = pointsValue;
     p.style.top = obj.offsetTop + "px";
+    p.style.fontSize = "11px";
     p.style.left = obj.offsetLeft + "px";
     animateUp(p, 8, 1, function() {
         stage.removeChild(p);
@@ -346,6 +415,10 @@ function renderWorld() {
     sprite = document.getElementById('sprite');
     coin_counter = document.getElementById('coin_counter');
 
+
+    AddMarioLivesUI(3);
+    marioLives = 3;
+    
     var ground_bricks = [];
 
     //setting the ground bricks of the level
@@ -353,7 +426,7 @@ function renderWorld() {
         var hole_offset = 0;
         if (i === 24) {
             hole_offset = 35;
-        }else if (i === 30 || i === 53) {
+        } else if (i === 30 || i === 53) {
             hole_offset = 45;
         }
         ground_bricks.push(dropGroundUnit(null, GRAPHICS.ground_brick, (i * 45) + hole_offset, stage.offsetHeight - 45, 45, 48, 0, 0, "repeat"));
@@ -361,105 +434,201 @@ function renderWorld() {
     }
 
     setTimeout(function() {
-	//task 4
         //setting pipes
-        var pipe1 = dropGroundUnit(ground_bricks[10], GRAPHICS.ground_pipe_small, null, null, 33, 31, -308, -417, "no-repeat");
+        var pipe1 = dropGroundUnit(ground_bricks[10], GRAPHICS.ground_pipe, null, null, 33, 31, -308, -417, "no-repeat");
         collidables.push(pipe1);
-        var pipe2 = dropGroundUnit(ground_bricks[14], GRAPHICS.ground_pipe_small, null, null, 33, 48, -270, -401, "no-repeat");
+        var pipe2 = dropGroundUnit(ground_bricks[14], GRAPHICS.ground_pipe, null, null, 33, 48, -270, -401, "no-repeat");
         collidables.push(pipe2);
-        var pipe3 = dropGroundUnit(ground_bricks[17], GRAPHICS.ground_pipe_small, null, null, 33, 63, -230, -385, "no-repeat");
+        var pipe3 = dropGroundUnit(ground_bricks[17], GRAPHICS.ground_pipe, null, null, 33, 63, -230, -385, "no-repeat");
         collidables.push(pipe3);
-        var pipe4 = dropGroundUnit(ground_bricks[20], GRAPHICS.ground_pipe_small, null, null, 33, 63, -230, -385, "no-repeat");
+        var pipe4 = dropGroundUnit(ground_bricks[20], GRAPHICS.ground_pipe, null, null, 33, 63, -230, -385, "no-repeat");
         collidables.push(pipe4);
-        var pipe5 = dropGroundUnit(ground_bricks[60], GRAPHICS.ground_pipe_small,null, null, 33, 31, -308, -490,  "no-repeat");
+        var pipe5 = dropGroundUnit(ground_bricks[57], GRAPHICS.ground_pipe, null, null, 33, 31, -308, -417, "no-repeat");
         collidables.push(pipe5);
-        var pipe6 = dropGroundUnit(ground_bricks[62], GRAPHICS.ground_pipe_small, null, null, 33, 31, -308, -490, "no-repeat");
+        var pipe6 = dropGroundUnit(ground_bricks[62], GRAPHICS.ground_pipe, null, null, 33, 31, -308, -417, "no-repeat");
         collidables.push(pipe6);
-		var b4 = dropGroundUnit(ground_bricks[9], GRAPHICS.ground_pipe);
-        var b5 = dropGroundUnit(ground_bricks[1], GRAPHICS.question_block, 770, -50, 33, 31, 0, 0, "no-repeat");
-        hitables.push(b5);
-		mushroomboxes.push(b5);
 
         //adding small stone bricks/stairs
         for (var j = 0; j < 8; j++) {
             for (var i = 0; i < 10; i++) {
                 if (i <= j)
                     continue;
-                var stone = dropGroundUnit(ground_bricks[62], GRAPHICS.small_brick, i * 20, -j * 20, 20, 20, 0, 0, "no-repeat");
+                var stone = dropGroundUnit(ground_bricks[62], GRAPHICS.small_brick, (i * 20) + 11, -j * 20, 20, 20, 0, 0, "no-repeat");
                 collidables.push(stone);
             }
         }
-        
+
         for (var j = 0; j < 4; j++) {
             for (var i = 0; i < 6; i++) {
                 if (i <= j)
                     continue;
-                var stone = dropGroundUnit(ground_bricks[50], GRAPHICS.small_brick, i * 20, -j * 20, 20, 20, 0, 0, "no-repeat");
+                var stone = dropGroundUnit(ground_bricks[50], GRAPHICS.small_brick, (i * 20) + 15, -j * 20, 20, 20, 0, 0, "no-repeat");
+                collidables.push(stone);
+            }
+        }
+        for (var j = 5; j > 0; j--) {
+            for (var i = 5; i > 0; i--) {
+                if (i <= j)
+                    continue;
+                var stone = dropGroundUnit(ground_bricks[53], GRAPHICS.small_brick, (j * 20) - 20, (i * 20) - 100, 20, 20, 0, 0, "no-repeat");
                 collidables.push(stone);
             }
         }
 
-        for (var i = 0; i < 3; i++) {
-            var bb1 = dropGroundUnit(ground_bricks[5], GRAPHICS.block_brick, i * 32, -45);
-            hitables.push(bb1);
-            collidables.push(bb1);
-            if (i == 1) {
-                mushroomboxes.push(bb1);
+        for (var j = 0; j < 5; j++) {
+            for (var i = 0; i < 5; i++) {
+                if (i <= j)
+                    continue;
+                var stone = dropGroundUnit(ground_bricks[43], GRAPHICS.small_brick, (i * 20), -j * 20, 20, 20, 0, 0, "no-repeat");
+                collidables.push(stone);
             }
         }
-        for (var i = 0; i < 3; i++) {
-            var bb1 = dropGroundUnit(ground_bricks[7], GRAPHICS.block_brick, i * 32, -45);
-            hitables.push(bb1);
-            collidables.push(bb1);
-        }
-        var b6 = dropGroundUnit(ground_bricks[10], GRAPHICS.moving_block);
-        var b7 = dropGroundUnit(ground_bricks[17], GRAPHICS.moving_block);
-        elevators.push(b6);
-        elevators.push(b7);
-        
-
-
-        for (var i = 0; i < 3; i++) {
-            var c1 = dropGroundUnit(ground_bricks[7], GRAPHICS.coin, i * 32);
-            collidables.push(c1);
-            coins.push(c1);
-        }
-        for (var i = 0; i < 4; i++) {
-            var c1 = dropGroundUnit(ground_bricks[6], GRAPHICS.coin, i * 32 + 5, -100 - i * 32);
-            collidables.push(c1);
-            coins.push(c1);
-        }
-        for (var i = 0; i < 3; i++) {
-            var c1 = dropGroundUnit(ground_bricks[10], GRAPHICS.coin, i * 32, -232);
-            collidables.push(c1);
-            coins.push(c1);
-        }
-
-        for (var i = 1; i < 4; i++) {
-            var bb1
-            if (i == 3) {
-                bb1 = dropGroundUnit(ground_bricks[15], GRAPHICS.question_block, i * 32, -i * 32);
-                mushroomboxes.push(bb1);
+        for (var j = 5; j > 0; j--) {
+            for (var i = 5; i > 0; i--) {
+                if (i <= j)
+                    continue;
+                var stone = dropGroundUnit(ground_bricks[46], GRAPHICS.small_brick, (j * 20) - 10, (i * 20) - 100, 20, 20, 0, 0, "no-repeat");
+                collidables.push(stone);
             }
-            else
-                bb1 = dropGroundUnit(ground_bricks[15], GRAPHICS.block_brick, i * 32, -2 * 32);
-            hitables.push(bb1);
-            collidables.push(bb1);
-
-            var c1 = dropGroundUnit(b7, GRAPHICS.coin, 12, -i * 32 - 140);
-            collidables.push(c1);
-            coins.push(c1);
         }
+
+        //adding castle/end of level
+        var castle = dropGroundUnit(ground_bricks[71], GRAPHICS.ground_castle, null, null, 80, 80, -247, -860, "no-repeat");
+        //collidables.push(castle);
+
+        //adding flag/end of level
+        var flag = dropGroundUnit(ground_bricks[69], GRAPHICS.ground_flag, null, null, 20, 140, -247, -600, "no-repeat");
+        collidables.push(flag);
+        //stone place to be repaired
+        var stone = dropGroundUnit(ground_bricks[69], GRAPHICS.small_brick, null, null, 20, 20, 0, 0, "no-repeat");
+        collidables.push(stone);
+
+        //adding question_blocks and brick_blocks on the map
+        var q_block = dropGroundUnit(ground_bricks[6], GRAPHICS.question_block, (i * 32) - 29, -45, 16, 16, -18, 0, "no-repeat");
+        hitables.push(q_block);
+        collidables.push(q_block);
+        coinboxes.push(q_block);
+
+        for (var i = 0; i < 3; i++) {
+            var b_brick = dropGroundUnit(ground_bricks[7], GRAPHICS.block_brick, i * 32, -45, 16, 16, 0, 0, "no-repeat");
+            hitables.push(b_brick);
+            collidables.push(b_brick);
+
+        }
+        for (var i = 0; i < 2; i++) {
+            var q_block = dropGroundUnit(ground_bricks[8], GRAPHICS.question_block, (i * 32) - 29, -45, 16, 16, -18, 0, "no-repeat");
+            hitables.push(q_block);
+            collidables.push(q_block);
+            if (i === 0) {
+                mushroomboxes.push(q_block);
+            } else {
+                coinboxes.push(q_block);
+            }
+        }
+
+        var q_block = dropGroundUnit(ground_bricks[6], GRAPHICS.question_block, (i * 32) + 12, -110, 16, 16, -18, 0, "no-repeat");
+        hitables.push(q_block);
+        collidables.push(q_block);
+        coinboxes.push(q_block);
+
+
+        for (var i = 0; i < 2; i++) {
+            var b_brick = dropGroundUnit(ground_bricks[27], GRAPHICS.block_brick, i * 32, -45, 16, 16, 0, 0, "no-repeat");
+            hitables.push(b_brick);
+            collidables.push(b_brick);
+        }
+        var q_block = dropGroundUnit(ground_bricks[26], GRAPHICS.question_block, (i * 32) - 3, -45, 16, 16, -18, 0, "no-repeat");
+        hitables.push(q_block);
+        collidables.push(q_block);
+        coinboxes.push(q_block);
+
+        for (var i = 0; i < 8; i++) {
+            var b_brick = dropGroundUnit(ground_bricks[28], GRAPHICS.block_brick, i * 16, -110, 16, 16, 0, 0, "no-repeat");
+            hitables.push(b_brick);
+            collidables.push(b_brick);
+        }
+
+        for (var i = 0; i < 3; i++) {
+            var b_brick = dropGroundUnit(ground_bricks[32], GRAPHICS.block_brick, i * 16, -110, 16, 16, 0, 0, "no-repeat");
+            hitables.push(b_brick);
+            collidables.push(b_brick);
+        }
+        var q_block = dropGroundUnit(ground_bricks[31], GRAPHICS.question_block, (i * 32) - 3, -45, 16, 16, -18, 0, "no-repeat");
+        hitables.push(q_block);
+        collidables.push(q_block);
+        coinboxes.push(q_block);
+
+        var q_block = dropGroundUnit(ground_bricks[31], GRAPHICS.question_block, (i * 32) - 3, -110, 16, 16, -18, 0, "no-repeat");
+        hitables.push(q_block);
+        collidables.push(q_block);
+        coinboxes.push(q_block);
+
+
+        for (var i = 0; i < 2; i++) {
+            var b_brick = dropGroundUnit(ground_bricks[35], GRAPHICS.block_brick, i * 16, -45, 16, 16, 0, 0, "no-repeat");
+            hitables.push(b_brick);
+            collidables.push(b_brick);
+        }
+
+        var b_brick = dropGroundUnit(ground_bricks[37], GRAPHICS.block_brick, i * 16, -45, 16, 16, 0, 0, "no-repeat");
+        hitables.push(b_brick);
+        collidables.push(b_brick);
+
+        var q_block = dropGroundUnit(ground_bricks[38], GRAPHICS.question_block, (i * 16), -45, 16, 16, -18, 0, "no-repeat");
+        hitables.push(q_block);
+        collidables.push(q_block);
+        coinboxes.push(q_block);
+        var b_brick = dropGroundUnit(ground_bricks[38], GRAPHICS.block_brick, i * 16, -110, 16, 16, 0, 0, "no-repeat");
+        hitables.push(b_brick);
+        collidables.push(b_brick);
+
+        var b_brick = dropGroundUnit(ground_bricks[39], GRAPHICS.block_brick, i * 16, -45, 16, 16, 0, 0, "no-repeat");
+        hitables.push(b_brick);
+        collidables.push(b_brick);
+
+
+        for (var i = 0; i < 2; i++) {
+            var b_brick = dropGroundUnit(ground_bricks[42], GRAPHICS.block_brick, (i * 48) - 20, -110, 16, 16, 0, 0, "no-repeat");
+            hitables.push(b_brick);
+            collidables.push(b_brick);
+        }
+        for (var i = 0; i < 2; i++) {
+            var q_block = dropGroundUnit(ground_bricks[42], GRAPHICS.question_block, (i * 16) - 4, -110, 16, 16, -18, 0, "no-repeat");
+            hitables.push(q_block);
+            collidables.push(q_block);
+            coinboxes.push(q_block);
+        }
+
+        for (var i = 0; i < 2; i++) {
+            var b_brick = dropGroundUnit(ground_bricks[42], GRAPHICS.block_brick, (i * 16) - 4, -45, 16, 16, 0, 0, "no-repeat");
+            hitables.push(b_brick);
+            collidables.push(b_brick);
+        }
+
+
+        for (var i = 0; i < 2; i++) {
+            var b_brick = dropGroundUnit(ground_bricks[59], GRAPHICS.block_brick, i * 32, -45, 16, 16, 0, 0, "no-repeat");
+            hitables.push(b_brick);
+            collidables.push(b_brick);
+        }
+        var q_block = dropGroundUnit(ground_bricks[58], GRAPHICS.question_block, (i * 32) - 3, -45, 16, 16, -18, 0, "no-repeat");
+        hitables.push(q_block);
+        collidables.push(q_block);
+        coinboxes.push(q_block);
+
+
+        //non stop coin box!
+        /*      var q_block = dropGroundUnit(ground_bricks[4], GRAPHICS.question_block, 0, -40, 15, 15, -15, 0, "no-repeat");
+         hitables.push(q_block);
+         coinboxes.push(q_block);
+         collidables.push(q_block);  */
+
+
 
         //Pipe allowing to get to lowest part of level
         var b9 = dropGroundUnit(ground_bricks[23], GRAPHICS.ground_pipe);
         warppipes.push(b9);
         collidables.push(b9);
-
-        collidables.push(b4);
-        collidables.push(b5);
-        collidables.push(b6);
-        collidables.push(b7);
     }, 1000);
 }
 
