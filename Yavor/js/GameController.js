@@ -66,6 +66,63 @@ var fpsCount;
 var isGameOver = false;
 var marioLives = 3;
 
+//YT
+function initLevel() {
+    posX = 200;
+    posY = 200;
+    BASE_SPEED = 3;
+    current_speed = 3;
+    jump_height = 12;
+    gravity_const = 1;
+    GRAVITY_CAP = 8;
+    WORLD_SIZE = 3500;
+    keysDown = [];
+    collidables = [];
+    OBJ_ABOVE = 1;
+    OBJ_BELOW = 2;
+    OBJ_LEFT = 3;
+    OBJ_RIGHT = 4;
+    bOnSurface = false;
+    bCanJump = true;
+    GROUNDED_TIMER = 500;
+    BOUNCE_FACTOR = 2;
+    elevators = [];
+    coins = [];
+    hitables = [];
+    coinboxes = [];
+    mushroomboxes = [];
+    warppipes = [];
+    mushrooms = [];
+    bAttemptingToWarp = false;
+    theta = 0;
+    MOTION_LEFT = 0;
+    MOTION_RIGHT = 1;
+    hoizontal_motion_direction = MOTION_RIGHT;
+    isGameOver = false;
+    marioLives = 3;
+}
+
+function resetGame() {
+    var button = document.getElementById("btn-reset");
+    document.body.innerHTML = '';
+    var str =
+        "<div id=\"stage\">" +
+        "<div id=\"stats_pane\"><img src=\"images/coin.gif\" />x<span id=\"coin_counter\">0</span></div>" +
+        "<div id=\"stats_live\"><img src=\"images/standing_right.gif\" />x<span id=\"live_counter\">0</span></div>" +
+        "<div id=\"game_over_text\">GAME OVER!" +
+        "<div><button id=\"btn-reset\" onclick=\"resetGame()\">Try Again ?</button></div>" +
+        "</div>" +
+        "<img id=\"sprite\" class=\"mario_small\" src=\"images/running_right.gif\" />"
+        +
+        "</div>" +
+        "<textarea id=\"debug\" rows=\"3\" cols=\"50\"></textarea>"
+    document.body.innerHTML = str;
+    initLevel();
+    renderWorld();
+
+}
+
+// YT end
 function AddMarioLivesUI(value) {
     live_counter.innerHTML = parseInt(live_counter.innerHTML) + value;
 }
@@ -79,21 +136,7 @@ function IsMarioAtHole() {
 
     return ret;
 }
-// YT
-function resetGame() {
 
-    var button = document.getElementById("btn-reset");
-    button.onclick = function () {
-        ResetMarioPosition();
-        AddMarioLivesUI(3);
-        marioLives = 3;
-        isGameOver = false;
-        var game_over_text = document.getElementById("game_over_text");
-        game_over_text.style.visibility = "hidden";
-    }
-
-}
-// YT end
 function ResetMarioPosition() {
     sprite.offsetTop = 200;
     sprite.offsetLeft = 200;
@@ -179,7 +222,7 @@ function update() {
             var game_over_text = document.getElementById("game_over_text");
             game_over_text.style.visibility = "visible";
             // YT
-            resetGame();
+
             // YT end
             isGameOver = true;
         }
@@ -191,6 +234,7 @@ function update() {
 
 
 }
+
 
 function isObtainable(obj) {
     if (mushrooms.indexOf(obj) > -1) {
@@ -720,9 +764,7 @@ function debugUpdate() {
 
     fpsCount = 0;
 }
-
-$(document).ready(function () {
-
+function intLevel() {
     debug = document.getElementById('debug');
 
     loadGraphics(function () {
@@ -747,6 +789,12 @@ $(document).ready(function () {
         $(this).keydown(onkeyDown);
         $(this).keyup(onKeyUp);
     }, 500);
+
+}
+
+$(document).ready(function () {
+    intLevel();
+
 });
 
 
