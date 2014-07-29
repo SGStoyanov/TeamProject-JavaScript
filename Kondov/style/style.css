@@ -10,7 +10,7 @@
 
 }
 #stage{
-    display: none;
+    display: block;
     position:relative;
     height:310px;
     width:3500px;

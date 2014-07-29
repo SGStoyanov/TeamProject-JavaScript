@@ -37,6 +37,7 @@ GRAPHICS.question_block = "images/question_block.gif";
 GRAPHICS.block_brick = "images/block_brick.gif";
 GRAPHICS.moving_block = "images/moving_block.png";
 GRAPHICS.mushroom_head = "images/mushroom_head.gif";
+GRAPHICS.enemy_mushroom = "images/enemies/frame0.png" 
 GRAPHICS.coin = "images/coin.gif";
 GRAPHICS.small_brick = "images/small_brick.png";
 var bOnSurface = false;
@@ -44,6 +45,7 @@ var bCanJump = true;
 var GROUNDED_TIMER = 500;
 var BOUNCE_FACTOR = 2;
 var elevators = [];
+var enemies = [];
 var coins = [];
 var hitables = [];
 var coinboxes = [];
@@ -443,6 +445,11 @@ function renderWorld() {
             collidables.push(c1);
             coins.push(c1);
         }
+
+        //add enemy
+        var mushroom = dropGroundUnit(ground_bricks.push(mushroom),GRAPHICS.enemy_mushroom,i*35,0);
+        enemies.push(mushroom);
+        //add enemy
 
         
 
