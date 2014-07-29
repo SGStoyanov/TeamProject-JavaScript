@@ -1,0 +1,72 @@
+.mario_big, .mario_small{
+    position:absolute;
+    left:200px;
+    top:200px;
+}
+.mario_big{
+    width:25px;
+}
+.mario_small{
+
+}
+#stage{
+    position:relative;
+    height:310px;
+    width:400px;
+    border:0px solid black;
+    background-image: url('../images/sky_background.jpg');
+    background-position: 0px 43px;
+    background-repeat:repeat-x;
+    background-color: #3399FF;
+    overflow:hidden;
+}
+#stage, .info{
+    float:left;	
+}
+
+.info{
+    margin:5px !IMPORTANT;	
+}
+#stats_pane{
+    position:fixed;
+    left:20px;
+    top:70px;
+    padding:5px;
+    font-size:16pt;
+    background-color:#FFF;
+}
+#stats_live{
+    position:fixed;
+    left:80px;
+    top:70px;
+    padding: 3px;
+    padding-bottom: 4px;
+    font-size:16pt;
+    background-color:#FFF;
+}
+
+#game_over_text{
+    position:fixed;
+    left:150px;
+    top:70px;
+    padding:5px;
+    font-size:16pt;
+    color:#FFF; 
+    visibility:hidden;   
+}
+.description{
+    font-family:Arial;
+    font-size:9pt;
+}
+.points{
+    color:white;
+    font-size:12pt;
+    font-weight:bold;
+    position:absolute;
+}
+#debug{
+    border:1px dashed blue;	
+    position:relative;
+    width:300px;
+    display:none;
+}
