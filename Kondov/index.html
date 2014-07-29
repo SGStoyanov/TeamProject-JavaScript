@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Mario game written in HTML.</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="pragma" content="no-cache" /> 
+        <meta http-equiv="cache-control" content="no-cache" /> 
+        <meta http-equiv="expires" content="-1" />
+        <script src="http://code.jquery.com/jquery-1.9.1.js" type="text/javascript" charset="utf-8"></script>
+        <link rel="stylesheet" type="text/css" href="style/style.css"/>
+        <script type="text/javascript" src="js/GameController.js"></script>
+    </head>
+    <body>
+        <div id="mario_game_image"><img onclick="changeVisibility()" src="SuperMario - start screen.png" ></div>
+        <div id="mario_game_image_second"><img onclick="changeVisibility()" src="SuperMario - start screen 2.png" ></div>
+        <div id="stage">
+            <div id="mario_points">MARIO<div id="points">0</div></div>
+            <div id="coins-count"><img src="images/coin.gif" alt="COINS" />X<div id="coin_counter">0</div></div>
+            <div id="world_counter">WORLD 1-1</div>
+            <div id="timer">TIME<div id="timer_seconds">400</div></div>
+            <img id="sprite" class="mario_small" src="images/running_right.gif" />
+        </div>
+        <textarea id="debug" rows="3" cols="50"></textarea>
+    </body>
+</html>
+

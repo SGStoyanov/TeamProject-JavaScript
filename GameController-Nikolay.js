@@ -7,7 +7,7 @@ var current_speed = 3;
 var jump_height = 12;
 var gravity_const = 1;
 var GRAVITY_CAP = 8;
-var WORLD_SIZE = 2400;
+var WORLD_SIZE = 2900;
 var JUMP = 38;
 var LEFT = 37;
 var RIGHT = 39;
@@ -29,29 +29,28 @@ GRAPHICS.jumping_right = "images/jumping_right.gif";
 GRAPHICS.standing_left = "images/standing_left.gif";
 GRAPHICS.standing_right = "images/standing_right.gif";
 GRAPHICS.ground_brick = "images/ground_brick.png";
-GRAPHICS.ground_pipe = "images/ground_pipe.gif";
+GRAPHICS.ground_pipe_middle = "images/SuperMarioBackgroundSprite.gif";
+GRAPHICS.ground_pipe_small = "images/SuperMarioBackgroundSprite.gif";
+GRAPHICS.ground_pipe_big = "images/SuperMarioBackgroundSprite.gif";
+GRAPHICS.flag = "images/SuperMarioBackgroundSprite.gif"
 GRAPHICS.question_block = "images/question_block.gif";
 GRAPHICS.block_brick = "images/block_brick.gif";
 GRAPHICS.moving_block = "images/moving_block.png";
 GRAPHICS.mushroom_head = "images/mushroom_head.gif";
 GRAPHICS.coin = "images/coin.gif";
 GRAPHICS.small_brick = "images/small_brick.png";
-GRAPHICS.enemiis="images/enemies.png";
-GRAPHICS.koopa_troopa_right="images/enemies/frame7.png";
-GRAPHICS.koopa_troopa_left="images/enemies/frame6.png";
 var bOnSurface = false;
 var bCanJump = true;
-var goLeft=false;
 var GROUNDED_TIMER = 500;
 var BOUNCE_FACTOR = 2;
 var elevators = [];
-var enemies=[];
 var coins = [];
 var hitables = [];
 var coinboxes = [];
 var mushroomboxes = [];
 var warppipes = [];
 var mushrooms = [];
+var goLeft=false;
 var bAttemptingToWarp = false;
 var theta = 0;
 var MOTION_LEFT = 0;
@@ -114,36 +113,16 @@ function update() {
     for (e in elevators) {
         elevators[e].style.top = 175 + 45 * Math.sin(theta / 80) + "px";
     }
-   
-      
-     
 	
+	//task 4 Nikolay
+	for (i in mushrooms) {
+        mushrooms[i].style.left = 835 + (-30) * Math.sin(theta / 80) + "px";
+        mushrooms[i].style.top = 235 + "px";
+    }
+
     //correct character position if hes colliding with objects
     collisionAdjust();
 
-	
-	 for(var i=0;i<1;i++){
-	   var enemiLeftPos=parseInt( enemies[0].style.left);
-	   var leftPosHolder=enemiLeftPos;
-	  	  
-      if(leftPosHolder<1190 && !goLeft){
-      leftPosHolder++;	 
-      enemies[0].style.left= leftPosHolder +"px";
-	  enemies[0].src=GRAPHICS.koopa_troopa_right;
-	   }
-	   else {
-	   goLeft=true;
-	   leftPosHolder--;
-	   enemies[0].style.left= leftPosHolder +"px";
-	   enemies[0].src=GRAPHICS.koopa_troopa_left;
-	   if(leftPosHolder<955)
-	      {
-	  	   goLeft=false;
-	      }
-	   }
-	  }
-	
-	
     //render results
     render();
 }
@@ -368,18 +347,57 @@ function renderWorld() {
     coin_counter = document.getElementById('coin_counter');
 
     var ground_bricks = [];
-    for (var i = 0; i < 24; i++) {
-        ground_bricks.push(dropGroundUnit(null, GRAPHICS.ground_brick, i * 100, stage.offsetHeight - 32));
+
+    //setting the ground bricks of the level
+    for (var i = 0; i < 78; i++) {
+        var hole_offset = 0;
+        if (i === 24) {
+            hole_offset = 35;
+        }else if (i === 30 || i === 53) {
+            hole_offset = 45;
+        }
+        ground_bricks.push(dropGroundUnit(null, GRAPHICS.ground_brick, (i * 45) + hole_offset, stage.offsetHeight - 45, 45, 48, 0, 0, "repeat"));
         collidables.push(ground_bricks[i]);
     }
 
-	
-	
     setTimeout(function() {
-        var b4 = dropGroundUnit(ground_bricks[9], GRAPHICS.ground_pipe);
-        var b5 = dropGroundUnit(ground_bricks[8], GRAPHICS.question_block, -15, -140);
+	//task 4
+        //setting pipes
+        var pipe1 = dropGroundUnit(ground_bricks[10], GRAPHICS.ground_pipe_small, null, null, 33, 31, -308, -417, "no-repeat");
+        collidables.push(pipe1);
+        var pipe2 = dropGroundUnit(ground_bricks[14], GRAPHICS.ground_pipe_small, null, null, 33, 48, -270, -401, "no-repeat");
+        collidables.push(pipe2);
+        var pipe3 = dropGroundUnit(ground_bricks[17], GRAPHICS.ground_pipe_small, null, null, 33, 63, -230, -385, "no-repeat");
+        collidables.push(pipe3);
+        var pipe4 = dropGroundUnit(ground_bricks[20], GRAPHICS.ground_pipe_small, null, null, 33, 63, -230, -385, "no-repeat");
+        collidables.push(pipe4);
+        var pipe5 = dropGroundUnit(ground_bricks[60], GRAPHICS.ground_pipe_small,null, null, 33, 31, -308, -490,  "no-repeat");
+        collidables.push(pipe5);
+        var pipe6 = dropGroundUnit(ground_bricks[62], GRAPHICS.ground_pipe_small, null, null, 33, 31, -308, -490, "no-repeat");
+        collidables.push(pipe6);
+		var b4 = dropGroundUnit(ground_bricks[9], GRAPHICS.ground_pipe);
+        var b5 = dropGroundUnit(ground_bricks[1], GRAPHICS.question_block, 770, -50, 33, 31, 0, 0, "no-repeat");
         hitables.push(b5);
-        coinboxes.push(b5);
+		mushroomboxes.push(b5);
+
+        //adding small stone bricks/stairs
+        for (var j = 0; j < 8; j++) {
+            for (var i = 0; i < 10; i++) {
+                if (i <= j)
+                    continue;
+                var stone = dropGroundUnit(ground_bricks[62], GRAPHICS.small_brick, i * 20, -j * 20, 20, 20, 0, 0, "no-repeat");
+                collidables.push(stone);
+            }
+        }
+        
+        for (var j = 0; j < 4; j++) {
+            for (var i = 0; i < 6; i++) {
+                if (i <= j)
+                    continue;
+                var stone = dropGroundUnit(ground_bricks[50], GRAPHICS.small_brick, i * 20, -j * 20, 20, 20, 0, 0, "no-repeat");
+                collidables.push(stone);
+            }
+        }
 
         for (var i = 0; i < 3; i++) {
             var bb1 = dropGroundUnit(ground_bricks[5], GRAPHICS.block_brick, i * 32, -45);
@@ -398,11 +416,11 @@ function renderWorld() {
         var b7 = dropGroundUnit(ground_bricks[17], GRAPHICS.moving_block);
         elevators.push(b6);
         elevators.push(b7);
-
+        
 
 
         for (var i = 0; i < 3; i++) {
-            var c1 = dropGroundUnit(ground_bricks[7], GRAPHICS.coin, i * 32, -10);
+            var c1 = dropGroundUnit(ground_bricks[7], GRAPHICS.coin, i * 32);
             collidables.push(c1);
             coins.push(c1);
         }
@@ -433,29 +451,8 @@ function renderWorld() {
             coins.push(c1);
         }
 
-        for (var j = 0; j < 9; j++) {
-            for (var i = 0; i < 11; i++) {
-                if (i <= j)
-                    continue;
-                var c1 = dropGroundUnit(ground_bricks[20], GRAPHICS.small_brick, i * 20, -j * 20);
-                collidables.push(c1);
-            }
-        }
-		
-        var b8 = dropGroundUnit(ground_bricks[12], GRAPHICS.ground_pipe);
-        collidables.push(b8);
-       
-
+        //Pipe allowing to get to lowest part of level
         var b9 = dropGroundUnit(ground_bricks[23], GRAPHICS.ground_pipe);
-		
-	
-	  
-       var koopa= dropGroundUnit(ground_bricks[10],GRAPHICS.koopa_troopa_right,i*30,0);
-	   enemies[0]=koopa;
-		
-
-	
-		
         warppipes.push(b9);
         collidables.push(b9);
 
@@ -466,17 +463,24 @@ function renderWorld() {
     }, 1000);
 }
 
-function dropGroundUnit(onGroundUnit, graphic_src, left, bottom) {
-    var ground_unit = document.createElement("img");
+function dropGroundUnit(onGroundUnit, graphic_src, left, bottom, width, height, bck_left, bck_top, repeat) {
+    var ground_unit = document.createElement("div");
     ground_unit.src = graphic_src;
+    console.log(ground_unit.src);
     stage.appendChild(ground_unit);
+    ground_unit.style.width = width + "px";
+    ground_unit.style.height = height + "px";
     ground_unit.style.position = "absolute";
+
     ground_unit.style.top = ((onGroundUnit != null) ? (onGroundUnit.offsetTop - ground_unit.offsetHeight + (bottom || 0)) : bottom) + "px";
     ground_unit.style.left = ((onGroundUnit != null) ? onGroundUnit.offsetLeft + (left || 0) : left) + "px";
+    ground_unit.style.backgroundImage = "url(" + graphic_src + ")";
+    ground_unit.style.backgroundPosition = bck_left + "px " + bck_top + "px";
+    ground_unit.style.backgroundRepeat = repeat;
+
+    ground_unit.style.zIndex = 2;
     return ground_unit;
 }
-
-
 function gravity() {
     if (!bOnSurface)
         posY += gravity_const;

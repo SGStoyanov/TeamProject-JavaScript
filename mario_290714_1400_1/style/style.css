@@ -12,7 +12,7 @@
 #stage{
     position:relative;
     height:310px;
-    width:3500px;
+    width:400px;
     border:0px solid black;
     background-image: url('../images/sky_background.jpg');
     background-position: 0px 43px;
@@ -23,11 +23,7 @@
 #stage, .info{
     float:left;	
 }
-.fb_holder{
-    clear:left;	
-    width:450px;
-    padding-top:10px;
-}
+
 .info{
     margin:5px !IMPORTANT;	
 }
@@ -39,13 +35,12 @@
     font-size:16pt;
     background-color:#FFF;
 }
-
- /* YT */
 #stats_live{
     position:fixed;
     left:80px;
     top:70px;
-    padding:5px;
+    padding: 3px;
+    padding-bottom: 4px;
     font-size:16pt;
     background-color:#FFF;
 }
@@ -57,10 +52,13 @@
     padding:5px;
     font-size:16pt;
     color:#FFF; 
-    visibility:hidden;   
+    visibility:hidden;
 }
-/* YT end*/
-
+/* YT */
+#game_over_text > div {
+    text-align:  center;
+}
+/* YT end */
 .description{
     font-family:Arial;
     font-size:9pt;
@@ -77,3 +75,16 @@
     width:300px;
     display:none;
 }
+/* YT */
+#btn-reset {
+    background: none;
+    border: none;
+    outline:  none;
+    color: white;
+
+
+}
+#btn-reset:hover {
+    color: red;
+}
+/* YT end */

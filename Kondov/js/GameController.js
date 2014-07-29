@@ -37,6 +37,7 @@ GRAPHICS.question_block = "images/question_block.gif";
 GRAPHICS.block_brick = "images/block_brick.gif";
 GRAPHICS.moving_block = "images/moving_block.png";
 GRAPHICS.mushroom_head = "images/mushroom_head.gif";
+GRAPHICS.enemy_mushroom = "images/enemies/frame0.png" 
 GRAPHICS.coin = "images/coin.gif";
 GRAPHICS.small_brick = "images/small_brick.png";
 var bOnSurface = false;
@@ -44,6 +45,7 @@ var bCanJump = true;
 var GROUNDED_TIMER = 500;
 var BOUNCE_FACTOR = 2;
 var elevators = [];
+var enemies = [];
 var coins = [];
 var hitables = [];
 var coinboxes = [];
@@ -245,6 +247,7 @@ function isWarpPipe(obj) {
 
 function takeCoin() {
     coin_counter.innerHTML = parseInt(coin_counter.innerHTML) + 1;
+
 }
 
 function collisionAdjust() {
@@ -443,6 +446,11 @@ function renderWorld() {
             coins.push(c1);
         }
 
+        //add enemy
+        var mushroom = dropGroundUnit(ground_bricks.push(mushroom),GRAPHICS.enemy_mushroom,i*35,0);
+        enemies.push(mushroom);
+        //add enemy
+
         
 
         //Pipe allowing to get to lowest part of level
@@ -560,3 +568,28 @@ $(document).ready(function() {
 });
 
 
+//Starting images onload and timers
+
+    setInterval(function(){
+                    if (document.getElementById('timer_seconds').innerHTML > 0) {
+                        document.getElementById('timer_seconds').innerHTML -= 1;
+                    }
+                    else {
+                        alert('Game Over. You ran out of time!');
+                        location.reload();
+                    }
+                },1000);
+
+    function getPoints(point) {
+        document.getElementById('points').innerHTML = parseInt(document.getElementById('points').innerHTML) + parseInt(points); 
+    }
+    function changeVisibility() {
+        document.getElementById('mario_game_image').style.display= "none";
+        document.getElementById('mario_game_image_second').style.display= "block";
+         setInterval(function(){
+                    document.getElementById('mario_game_image_second').style.display= "none";
+                    document.getElementById('stage').style.display= "block"
+                },3000);
+    }
+
+//Starting images onload and timers
