@@ -90,6 +90,8 @@ function ResetMarioPosition() {
 }
 
 function update() {
+if (isGameOver)
+        return;
     fpsCount++;
     //update chacter motion appearance, running, jumping, standing..
     if (bOnSurface)
