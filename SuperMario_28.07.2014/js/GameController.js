@@ -32,6 +32,7 @@ GRAPHICS.ground_brick = "images/ground_brick.png";
 GRAPHICS.ground_pipe_middle = "images/SuperMarioBackgroundSprite.gif";
 GRAPHICS.ground_pipe_small = "images/SuperMarioBackgroundSprite.gif";
 GRAPHICS.ground_pipe_big = "images/SuperMarioBackgroundSprite.gif";
+GRAPHICS.flag = "images/SuperMarioBackgroundSprite.gif"
 GRAPHICS.question_block = "images/question_block.gif";
 GRAPHICS.block_brick = "images/block_brick.gif";
 GRAPHICS.moving_block = "images/moving_block.png";
@@ -407,11 +408,11 @@ function renderWorld() {
         var b7 = dropGroundUnit(ground_bricks[17], GRAPHICS.moving_block);
         elevators.push(b6);
         elevators.push(b7);
-
+        
 
 
         for (var i = 0; i < 3; i++) {
-            var c1 = dropGroundUnit(ground_bricks[7], GRAPHICS.coin, i * 32, -10);
+            var c1 = dropGroundUnit(ground_bricks[7], GRAPHICS.coin, i * 32);
             collidables.push(c1);
             coins.push(c1);
         }
