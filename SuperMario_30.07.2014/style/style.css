@@ -1,0 +1,163 @@
+.mario_big, .mario_small{
+    position:absolute;
+    left:200px;
+    top:200px;
+}
+.mario_big{
+    width:25px;
+}
+.mario_small{
+
+}
+#stage_background{
+    height:312px;
+    width:402px;
+    background-color: #3399FF;
+}
+#stage{
+    position:relative;
+    height:310px;
+    width:400px;
+    border:0px solid black;
+    background-image: url('../images/sky_background.jpg');
+    background-position: 0px 43px;
+    background-repeat:repeat-x;
+    background-color: #3399FF;
+    overflow:hidden;
+}
+#stage, .info{
+    float:left;	
+}
+
+.info{
+    margin:5px !IMPORTANT;	
+}
+#stats_pane{
+    position:fixed;
+    left:20px;
+    top:70px;
+    padding:5px;
+    font-size:16pt;
+    background-color:#FFF;
+}
+#stats_live{
+    position: fixed;
+    left: 180px;
+    top: 155px;
+    color: #fff;
+    font-size: 20pt;
+}
+#stats_live img{
+    margin-right: 8px;
+}
+#live_counter{
+    margin-left: 8px;
+}
+.description{
+    font-family:Arial;
+    font-size:9pt;
+}
+.points{
+    color:white;
+    font-size:12pt;
+    font-weight:bold;
+    position:absolute;
+}
+#debug{
+    border:1px dashed blue;	
+    position:relative;
+    width:300px;
+    display:none;
+}
+
+/* coins and other status bars */
+#lifes_holder{
+    width: 400px;
+    top: 63px;
+    height: 255px;
+    position: absolute;
+    z-index: 4000;
+    background: #000;
+    visibility: hidden;
+}
+#game_over_play_again{
+    visibility: hidden;
+    position: fixed;
+    top: 8px;
+    text-align: center;
+    width: 400px;
+    height: 190px;
+    color: #fff;
+    z-index: 6000;
+    padding-top: 120px;
+    font-size: 24px;
+    background: #000;
+}
+#play_again{
+    margin-top:15px;
+}
+#status_bars{
+    width: 400px;
+    height: 35px;
+    position: absolute;
+    z-index: 2;
+    padding-top:20px;
+
+}
+#status_bars div{
+    float:left;
+}
+#coins-count {
+    margin-left:25px;
+    min-width:50px;
+    font-size: 1em;
+    color: white;
+    font-family: "Calibri", Calibri;
+}
+#coins-count > img {
+    margin-right: 8px;
+    width: 12px;
+}
+#coin_counter {
+    margin-left: 8px;
+}
+#mario_points {
+    margin-left:50px;
+    width: 50px;
+    color: white;
+    font-size: 1em;
+    font-family: "Calibri", Calibri;
+}
+#points {
+    width: 50px;
+    text-align: center;
+    font-size: 0.8em;
+}
+#world_counter {
+    margin-left:25px;
+    text-align: center;
+    color: white;
+    font-size: 1em;
+    font-family: "Calibri", Calibri;
+}
+#timer {
+    margin-left:25px;
+    text-align: center;
+    color: white;
+    font-size: 1em;
+    font-family: "Calibri", Calibri;  
+}
+#timer_seconds { 
+    text-align: center;
+    font-size: 0.8em;
+    display: block;
+}
+#mario_game_image {
+    position:absolute;
+    z-index: 5000;
+}
+#mario_game_image_second {
+    display: none;
+    position:absolute;
+    z-index: 5000;
+}
