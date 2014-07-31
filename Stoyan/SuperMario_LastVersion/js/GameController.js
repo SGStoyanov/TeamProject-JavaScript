@@ -30,7 +30,7 @@ GRAPHICS.standing_left = "images/standing_left.gif";
 GRAPHICS.standing_right = "images/standing_right.gif";
 
 
-GRAPHICS.moving_block = "images/moving_block.png";
+//GRAPHICS.moving_block = "images/moving_block.png";
 
 GRAPHICS.coin = "images/coin.gif";
 
@@ -55,7 +55,6 @@ var coinboxes = [];
 var mushroomboxes = [];
 var warppipes = [];
 var mushrooms = [];
-var flags = [];
 var bAttemptingToWarp = false;
 var theta = 0;
 var MOTION_LEFT = 0;
@@ -66,10 +65,9 @@ var collideCount;
 var fpsCount;
 var isGameOver = false;
 var marioLives = 3;
-
-function AddMarioLivesUI(value) {
-    live_counter.innerHTML = parseInt(live_counter.innerHTML) + value;    
-}
+//Stoyan
+var flag = false;
+//Stoyan
 
 function IsMarioAtHole() {
     var ret = false;
@@ -77,7 +75,7 @@ function IsMarioAtHole() {
     if ((sprite.offsetTop + sprite.width) >= stage.offsetHeight) {
         ret = true;
     }
-    
+
     return ret;
 }
 function ResetMarioPosition() {
@@ -89,12 +87,24 @@ function ResetMarioPosition() {
     posX = 200;
     posY = 200;
 }
-
+function winGame() {
+    var win_game = document.getElementById("win_game");
+    var status_bar = document.getElementById("status_bars");
+    status_bar.style.backgroundColor = "black";
+    win_game.style.visibility = "visible";
+    isGameOver = true;
+}
 function update() {
-if (isGameOver)
+
+    if (isGameOver)
         return;
+
+    if (sprite.style.left === "3177px") {
+        winGame();
+    }
+
     fpsCount++;
-    //update character motion appearance, running, jumping, standing..
+    //update chacter motion appearance, running, jumping, standing..
     if (bOnSurface)
         sprite.src = (hoizontal_motion_direction == MOTION_RIGHT) ? GRAPHICS.standing_right : GRAPHICS.standing_left;
     if (keysDown.indexOf(DOWN) < 0)
@@ -105,7 +115,6 @@ if (isGameOver)
         switch (keysDown[key]) {
             case RIGHT:
                 posX += current_speed;
-                console.log(stage.scrollLeft, sprite.offsetLeft, stage.offsetWidth);
                 if (stage.scrollLeft < WORLD_SIZE)
                     stage.scrollLeft = sprite.offsetLeft - (stage.offsetWidth / 2) + (sprite.offsetWidth / 2);
                 if (bOnSurface)
@@ -136,7 +145,6 @@ if (isGameOver)
                     bAttemptingToWarp = true;
                 break;
             default:
-
         }
     }
 
@@ -147,27 +155,126 @@ if (isGameOver)
         elevators[e].style.top = 175 + 45 * Math.sin(theta / 80) + "px";
     }
 
+    //task 4 Nikolay
+    for (i in mushrooms) {
+       // mushrooms[i].style.left = 300 + (10) * Math.sin(theta / 80) + "px";
+       // mushrooms[i].style.top = 250 + "px";
+    }
     //correct character position if hes colliding with objects
     collisionAdjust();
 
     //render results
     render();
-    
+
     //checking if Mario has fallen
     if (IsMarioAtHole()) {
         marioLives--;
-        AddMarioLivesUI(-1);
-        if (marioLives <= 0) {
-
-            var game_over_text = document.getElementById("game_over_text");
-            game_over_text.style.visibility = "visible";
-            isGameOver = true;
+        console.log(marioLives);
+        if (marioLives === 0) {
+            console.log("game over");
+            gameIsOver();
         }
         else {
-            ResetMarioPosition();        
+            console.log("pokaji jivotite ekran");
+            AddMarioLivesUI(-1);
         }
 
     }
+}
+
+function AddMarioLivesUI(value) {
+    ResetMarioPosition();
+    var lifes_left = document.getElementById("lifes_holder");
+    lifes_left.style.visibility = "visible";
+    var live_counter = document.getElementById("live_counter");
+    var status_bar = document.getElementById("status_bars");
+    status_bar.style.backgroundColor = "#000";
+    console.log(parseInt(live_counter.innerHTML), value);
+    live_counter.innerHTML = marioLives;
+    if (marioLives === 0) {
+        // ResetMarioPosition();
+    }
+    startLeverFromTheBeginning();
+}
+function startLeverFromTheBeginning() {
+    console.log("ehoooo");
+
+    setInterval(function() {
+        var lifes_left = document.getElementById("lifes_holder");
+        lifes_left.style.visibility = "hidden";
+        var status_bar = document.getElementById("status_bars");
+        status_bar.style.backgroundColor = "#3399FF";
+        sprite.clssName = "mario_small";
+    }, 3000);
+}
+
+function gameIsOver() {
+    var game_over = document.getElementById("game_over_play_again");
+    var status_bar = document.getElementById("status_bars");
+    status_bar.style.backgroundColor = "black";
+    game_over.style.visibility = "visible";
+    isGameOver = true;
+}
+function initLevel() {
+    posX = 200;
+    posY = 200;
+    BASE_SPEED = 3;
+    current_speed = 3;
+    jump_height = 12;
+    gravity_const = 1;
+    GRAVITY_CAP = 8;
+    WORLD_SIZE = 3500;
+    keysDown = [];
+    collidables = [];
+    OBJ_ABOVE = 1;
+    OBJ_BELOW = 2;
+    OBJ_LEFT = 3;
+    OBJ_RIGHT = 4;
+    bOnSurface = false;
+    bCanJump = true;
+    GROUNDED_TIMER = 500;
+    BOUNCE_FACTOR = 2;
+    elevators = [];
+    coins = [];
+    hitables = [];
+    coinboxes = [];
+    mushroomboxes = [];
+    warppipes = [];
+    mushrooms = [];
+    bAttemptingToWarp = false;
+    theta = 0;
+    MOTION_LEFT = 0;
+    MOTION_RIGHT = 1;
+    hoizontal_motion_direction = MOTION_RIGHT;
+    isGameOver = false;
+    marioLives = 3;
+    //Stoyan
+    flag = false;
+    //Stoyan
+
+    var game_over = document.getElementById("game_over_play_again");
+    var status_bar = document.getElementById("status_bars");
+    status_bar.style.backgroundColor = "#3399FF";
+    game_over.style.visibility = "hidden";
+
+    var win_game = document.getElementById("win_game");
+    win_game.style.visibility = "hidden";
+
+    document.getElementById('points').innerHTML = 0;
+    document.getElementById('coin_counter').innerHTML = 0;
+    document.getElementById('timer_seconds').innerHTML = 150;
+}
+
+function resetGame() {
+    stage.innerHTML = '';
+    var mario_img = document.createElement('img');
+    stage.appendChild(mario_img);
+    mario_img.id = "sprite";
+    mario_img.className = "mario_small";
+    mario_img.src = "images/running_right.gif";
+
+    initLevel();
+    renderWorld();
 }
 
 function isObtainable(obj) {
@@ -178,10 +285,9 @@ function isObtainable(obj) {
     }
 
     //Stoyan
-    if (flags.indexOf(obj) > -1) {
-        removeFromCollection(flags, obj);
-        animateFormChange(sprite, sprite.className, "flag_down", 8);
-        return true;
+    if (flag) {
+        removeFromCollection(flag, obj);
+        animateFormChange(sprite, sprite.className, 'flag_down', 15);
     }
     //Stoyan
 
@@ -192,6 +298,7 @@ function isObtainable(obj) {
         stage.removeChild(obj);
 
         takeCoin();
+        getPoints(200);
         return true;
     }
     return false;
@@ -228,6 +335,7 @@ function playHitAnimation(obj) {
 
         animatePoints(c, 200);
         takeCoin();
+        getPoints(200);
 
         animateUp(c, 8, 1, function() {
             stage.removeChild(c);
@@ -253,7 +361,7 @@ function playHitAnimation(obj) {
         mushrooms.push(c);
 
         collidables.push(c);
-        coins.push(c); //fix later
+        coins.push(c);
 
         animateUp(c, 5, 1, function() {
             //make moable back and forth
@@ -270,7 +378,7 @@ function animatePoints(obj, pointsValue) {
     p.style.top = obj.offsetTop + "px";
     p.style.fontSize = "11px";
     p.style.left = obj.offsetLeft + "px";
-    animateUp(p, 8, 1, function() {
+    animateUp(p, 10, 3, function() {
         stage.removeChild(p);
     });
 }
@@ -308,7 +416,11 @@ function animateDown(obj, amount, incY, endCallBack) {
 
 function animateHorizontal(obj, incX) {
     obj.style.left = obj.offsetLeft + incX + "px";
+    console.log(obj);
     setTimeout(function() {
+        if(obj.style.left === "391px"){
+            obj.style.top = 250 + "px";
+        }
         animateHorizontal(obj, incX);
     }, 30);
 }
@@ -322,16 +434,16 @@ function isWarpPipe(obj) {
     }
 }
 
-//Stoyan Stoyanov
-function isFlag(obj) {
-    if (flags.indexOf(obj) > -1) {
+//Stoyan
+function isWarpPipe(obj) {
+    if (flag) {
         clearTimeout(update_interval);
-        animateDown(sprite, 30, 1, function() {
+        animateDown(sprite, 15, 1, function() {
             window.location.reload();
         });
     }
 }
-//Stoyan Stoyanov
+//Stoyan
 
 function takeCoin() {
     coin_counter.innerHTML = parseInt(coin_counter.innerHTML) + 1;
@@ -362,14 +474,6 @@ function collisionAdjust() {
                     break;
                 current_speed = BASE_SPEED;
                 break;
-
-            //Stoyan Stoyanov - adding flag interaction
-                if (isFlag(collidables[c]))
-                    break;
-                current_speed = BASE_SPEED;
-                    break;
-            //Stoyan Stoyanov
-
             case OBJ_LEFT:
                 if (isObtainable(collidables[c]))
                     break;
@@ -377,14 +481,6 @@ function collisionAdjust() {
                 if (!bCanJump)
                     current_speed = 1;
                 break;
-
-            //Stoyan Stoyanov - adding flag interaction
-                if (isFlag(collidables[c]))
-                    break;
-                current_speed = BASE_SPEED;
-                break;
-            //Stoyan Stoyanov
-
             case OBJ_RIGHT:
                 if (isObtainable(collidables[c]))
                     break;
@@ -392,14 +488,6 @@ function collisionAdjust() {
                 if (!bCanJump)
                     current_speed = 1;
                 break;
-
-            //Stoyan Stoyanov - adding flag interaction
-                if (isFlag(collidables[c]))
-                    break;
-                current_speed = BASE_SPEED;
-                break;
-            //Stoyan Stoyanov
-
             case OBJ_BELOW:
                 playHitAnimation(collidables[c]);
                 if (isObtainable(collidables[c]))
@@ -407,14 +495,6 @@ function collisionAdjust() {
                 posY = collidables[c].offsetTop + collidables[c].offsetHeight;
                 gravity_const = BOUNCE_FACTOR;
                 break;
-
-            //Stoyan Stoyanov - adding flag interaction
-                if (isFlag(collidables[c]))
-                    break;
-                current_speed = BASE_SPEED;
-                break;
-            //Stoyan Stoyanov
-
             default:
                 sprite.style.backgroundColor = "transparent";
         }
@@ -462,9 +542,9 @@ function renderWorld() {
     coin_counter = document.getElementById('coin_counter');
 
 
-    AddMarioLivesUI(3);
+    //AddMarioLivesUI(3);
     marioLives = 3;
-    
+
     var ground_bricks = [];
 
     //setting the ground bricks of the level
@@ -544,10 +624,11 @@ function renderWorld() {
 
         //adding flag/end of level
         var flag = dropGroundUnit(ground_bricks[69], GRAPHICS.ground_flag, null, null, 20, 140, -247, -600, "no-repeat");
-        collidables.push(flag);
+        //collidables.push(flag);
+
         //stone place to be repaired
-        var stone = dropGroundUnit(ground_bricks[69], GRAPHICS.small_brick, null, null, 20, 20, 0, 0, "no-repeat");
-        collidables.push(stone);
+        //var stone = dropGroundUnit(ground_bricks[69], GRAPHICS.small_brick, null, null, 20, 20, 0, 0, "no-repeat");
+        //collidables.push(stone);
 
         //adding question_blocks and brick_blocks on the map
         var q_block = dropGroundUnit(ground_bricks[6], GRAPHICS.question_block, (i * 32) - 29, -45, 16, 16, -18, 0, "no-repeat");
@@ -681,7 +762,6 @@ function renderWorld() {
 function dropGroundUnit(onGroundUnit, graphic_src, left, bottom, width, height, bck_left, bck_top, repeat) {
     var ground_unit = document.createElement("div");
     ground_unit.src = graphic_src;
-    console.log(ground_unit.src);
     stage.appendChild(ground_unit);
     ground_unit.style.width = width + "px";
     ground_unit.style.height = height + "px";
@@ -744,13 +824,32 @@ function loadGraphics(onloaded) {
     onloaded();
 }
 
-function debugUpdate() {
-    var str = "FPS: " + fpsCount + "\n" + "Collision space: " + collideCount + "\n";
-    str += "Collidable: " + collidables.length;
-    debug.value = str;
+//Starting images onload and timers
 
-    fpsCount = 0;
+setInterval(function() {
+    if (document.getElementById('timer_seconds').innerHTML > 0) {
+        document.getElementById('timer_seconds').innerHTML -= 1;
+    }
+    else {
+        gameIsOver();
+        //alert('Game Over. You ran out of time!');
+        //location.reload();
+    }
+}, 1000);
+
+function getPoints(points) {
+    document.getElementById('points').innerHTML = parseInt(document.getElementById('points').innerHTML) + parseInt(points);
 }
+function changeVisibility() {
+    document.getElementById('mario_game_image').style.display = "none";
+    document.getElementById('mario_game_image_second').style.display = "block";
+    setInterval(function() {
+        document.getElementById('mario_game_image_second').style.display = "none";
+        document.getElementById('stage').style.display = "block"
+    }, 3000);
+}
+
+//Starting images onload and timers
 
 $(document).ready(function() {
 
@@ -770,12 +869,11 @@ $(document).ready(function() {
             gravity();
         }, 30);
 
-        //performance profile, heartbeat once a second
-        setInterval(function() {
-            debugUpdate();
-        }, 1000);
+
 
         $(this).keydown(onkeyDown);
         $(this).keyup(onKeyUp);
     }, 500);
 });
+
+
