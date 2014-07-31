@@ -175,6 +175,10 @@ function update() {
         else {
             console.log("pokaji jivotite ekran");
             AddMarioLivesUI(-1);
+
+            //Stoyan - makes Mario small when fall in hole
+            animateFormChange(sprite, sprite.className, "mario_small", 8);
+            //Stoyan
         }
 
     }
